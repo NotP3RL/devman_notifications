@@ -17,20 +17,19 @@ if __name__ == '__main__':
     chat_id = parser.parse_args().chat_id
     updater = Updater(token=TELEGRAM_TOKEN)
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
+    status = None
 
     while True:
         try:
             params = {}
-            try:
-                if deserialized_response['status'] == 'timeout':
-                    params.update({'timestamp': deserialized_response['timestamp_to_request']})
-            except NameError:
-                pass
+            if status == 'timeout':
+                params.update({'timestamp': deserialized_response['timestamp_to_request']})
             headers = {'Authorization': f'Token {DEVMAN_TOKEN}'}
             response = requests.get('https://dvmn.org/api/long_polling/', headers=headers, params=params)
             response.raise_for_status()
-            deserialized_response = json.loads(response.text)
-            if deserialized_response['status'] == 'found':
+            deserialized_response = response.json()
+            status = deserialized_response['status']
+            if status == 'found':
                 for attempt in deserialized_response['new_attempts']:
                     if attempt['is_negative']:
                         attempt_status_message = 'К сожалению, в работе нашлись ошибки.'
