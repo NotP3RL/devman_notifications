@@ -39,3 +39,4 @@ if __name__ == '__main__':
                     bot.send_message(chat_id=chat_id, text=telegram_message)
         except (requests.exceptions.ConnectTimeout, ConnectionError):
             print('skill issue')
+            time.sleep(30)
