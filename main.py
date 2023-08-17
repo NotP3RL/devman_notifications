@@ -23,14 +23,14 @@ if __name__ == '__main__':
         try:
             params = {}
             if status == 'timeout':
-                params.update({'timestamp': deserialized_response['timestamp_to_request']})
+                params.update({'timestamp': devman_checklist['timestamp_to_request']})
             headers = {'Authorization': f'Token {DEVMAN_TOKEN}'}
             response = requests.get('https://dvmn.org/api/long_polling/', headers=headers, params=params)
             response.raise_for_status()
-            deserialized_response = response.json()
-            status = deserialized_response['status']
+            devman_checklist = response.json()
+            status = devman_tasks_checklist['status']
             if status == 'found':
-                for attempt in deserialized_response['new_attempts']:
+                for attempt in devman_checklist['new_attempts']:
                     if attempt['is_negative']:
                         attempt_status_message = 'К сожалению, в работе нашлись ошибки.'
                     else:
